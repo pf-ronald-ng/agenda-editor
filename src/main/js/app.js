@@ -1,6 +1,5 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-import {BrowserRouter, Link, Route} from 'react-router-dom';
 
 import client from './client';
 import follow from './follow';
