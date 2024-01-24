@@ -40,7 +40,9 @@ public class AgendaService {
     public void createAgenda(AgendaDto agendaDto) {
         validateAgendaDto(agendaDto);
 
-        Agenda agenda = Agenda.builder().name(agendaDto.getName()).build();
+        //Agenda agenda = Agenda.builder().name(agendaDto.getName()).build();
+        Agenda agenda = new Agenda();
+        agenda.setName(agendaDto.getName());
 
         agendaRepository.save(agenda);
 
@@ -76,15 +78,16 @@ public class AgendaService {
         Agenda agenda = agendaRepository.findById(agendaId)
                 .orElseThrow(() -> new IllegalArgumentException("Agenda not found with id: " + agendaId));
 
-        AgendaItem agendaItem = AgendaItem.builder()
-                .itemOrder(agendaItemDto.getItemOrder())
-                .phase(agendaItemDto.getPhase())
-                .content(agendaItemDto.getContent())
-                .objectives(agendaItemDto.getObjectives())
-                .duration(agendaItemDto.getDuration())
-                .creditable(agendaItemDto.isCreditable())
-                .agenda(agenda)
-                .build();
+        AgendaItem agendaItem = new AgendaItem();
+
+        agendaItem.setItemOrder(agendaItemDto.getItemOrder());
+        agendaItem.setPhase(agendaItemDto.getPhase());
+        agendaItem.setContent(agendaItemDto.getContent());
+        agendaItem.setObjectives(agendaItemDto.getObjectives());
+        agendaItem.setDuration(agendaItemDto.getDuration());
+        agendaItem.setCreditable(agendaItemDto.isCreditable());
+
+        agendaItem.setAgenda(agenda);
 
         agendaItemRepository.save(agendaItem);
 

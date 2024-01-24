@@ -1,14 +1,9 @@
 package com.netdimen.agendaeditor.agenda.model;
 
-import com.netdimen.agendaeditor.agenda.model.Agenda;
 import com.netdimen.agendaeditor.agenda.model.dto.AgendaItemDto;
-import lombok.Builder;
-import lombok.Data;
 
 import javax.persistence.*;
 
-@Data
-@Builder
 @Entity
 @Table(name = "agendaitem")
 public class AgendaItem {
@@ -32,7 +27,7 @@ public class AgendaItem {
 
     private boolean creditable;
 
-    private AgendaItem() {
+    public AgendaItem() {
 
     }
 

@@ -2,16 +2,12 @@ package com.netdimen.agendaeditor.agenda.model;
 
 import com.netdimen.agendaeditor.agenda.model.dto.AgendaDto;
 import com.netdimen.agendaeditor.agenda.model.dto.AgendaItemDto;
-import lombok.Builder;
-import lombok.Data;
 
 import javax.persistence.*;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
-@Data
-@Builder
 @Entity
 @Table(name = "agenda")
 public class Agenda {
@@ -25,7 +21,7 @@ public class Agenda {
     @OneToMany(mappedBy = "agenda", cascade = CascadeType.ALL)
     private List<AgendaItem> agendaItems = new ArrayList<>();
 
-    private Agenda() {
+    public Agenda() {
 
     }
 
