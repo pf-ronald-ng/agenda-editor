@@ -42,4 +42,15 @@ public class AgendaItem {
         this.agenda = agenda;
     }
 
+    public AgendaItem(long id ,int itemOrder, String phase, String content, String objectives, Long duration, boolean creditable, Agenda agenda) {
+        this.id = id;
+        this.itemOrder = itemOrder;
+        this.phase = phase;
+        this.content = content;
+        this.objectives = objectives;
+        this.duration = duration;
+        this.creditable = creditable;
+        this.agenda = agenda;
+    }
+
 }
