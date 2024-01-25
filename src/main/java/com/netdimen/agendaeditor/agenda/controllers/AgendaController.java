@@ -27,7 +27,7 @@ public class AgendaController {
 
         return "index";
     }
-    @GetMapping("/agenda/{agendaId}")
+    @GetMapping("/{agendaId}")
     public ResponseEntity<Agenda> findById(@PathVariable Long agendaId) {
         Optional<Agenda> agendaOptional = agendaRepository.findById(agendaId);
         return agendaOptional.map(ResponseEntity::ok).orElseGet(() -> ResponseEntity.notFound().build());
@@ -35,8 +35,8 @@ public class AgendaController {
 
     @PostMapping
     private ResponseEntity<Void> createAgenda(@RequestBody Agenda newAgendaRequest, UriComponentsBuilder ucb) {
-        Agenda agendaWithOwner = new Agenda(newAgendaRequest.getName());
-        Agenda savedAgenda = agendaRepository.save(agendaWithOwner);
+        Agenda agenda = new Agenda(newAgendaRequest.getName());
+        Agenda savedAgenda = agendaRepository.save(agenda);
         URI locationOfNewCashCard = ucb
                 .path("agenda/{id}")
                 .buildAndExpand(savedAgenda.getId())
