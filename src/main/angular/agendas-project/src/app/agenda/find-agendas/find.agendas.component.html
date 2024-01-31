@@ -1,0 +1,28 @@
+<br/>
+<br/>
+<br/>
+
+<div align="center">
+	<h3>Haga click on Find</h3>
+
+	<button type="submit" class="btn btn-secondary" (click)="findAgendas()" >Find</button>
+</div>
+<br/>
+<br/>
+
+<div align="center" class="listado" *ngIf="showAgendas">
+	<h3>List of Agendas</h3>
+
+	<table class="table" *ngIf="agendas">
+	  <tr>
+	    <th>Name</th>
+	    <th>Agenda Items</th>
+	  </tr>
+	  <tr *ngFor="let agenda of agendas">
+	    <td>{{agenda.name}}</td>
+	    <td>{{agenda.agendaItems}}</td>
+	  </tr>
+	</table>
+
+	<span *ngIf="!agendas">Loading list...</span>
+</div>

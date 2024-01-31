@@ -3,6 +3,7 @@ import ReactDOM from 'react-dom';
 
 import client from './client';
 import follow from './follow';
+import axios from 'axios';
 
 const root = '/api';
 
@@ -35,25 +36,31 @@ class AgendaEditor extends React.Component {
     }
 
     loadFromServer(pageSize) {
-        follow(client, root, [
-            {rel: 'agendas', params: {size: pageSize}}]
-        ).then(agendaList => {
-            return client({
-                method: 'GET',
-                path: agendaList.entity._links.profile.href,
-                headers: {'Accept': 'application/schema+json'}
-            }).then(schema => {
-                this.schema = schema.entity;
-                return agendaList;
-            });
-        }).done(agendaList => {
+        const getAgendas = async (keyword) => {
+            const response  = await axios.get(
+                'http://localhost:8080/agendas/',
+                {
+                    headers: {
+                        //Authorization: 'Client-ID 6429d64806798333b33b0f5be08056242d9dcc8e5336113349c6a58754ac5fda'
+                    },
+                    params:{
+                        //query: keyword
+                    }
+                }
+            );
+
+            return response.data.results;
+        }
+
+        getAgendas.then(agendaList => {
             this.setState({
                 agendas: agendaList.entity._embedded.agendas,
                 attributes: Object.keys(this.schema.properties),
                 pageSize: pageSize,
                 links: agendaList.entity._links
-            });
-        });
+            })
+
+        })
     }
 
     onCreate(newAgenda) {
