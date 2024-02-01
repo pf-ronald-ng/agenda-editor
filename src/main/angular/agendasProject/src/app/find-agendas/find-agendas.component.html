@@ -1,0 +1,35 @@
+<div>
+    <div align="center">
+        <h3>Haga click on Find</h3>
+    
+        <button type="submit" class="btn btn-secondary" (click)="findAgendas()" >Find</button>
+    </div>
+    <br/>
+    <br/>
+    
+    @if(showAgendas){ 
+        <div align="center" class="listado">
+            <h3>List of Agendas</h3>
+        
+            @if(agendas){ 
+                <table class="table">
+                <tr>
+                    <th>Name</th>
+                    <th>Agenda Items</th>
+                </tr>
+                <tr>
+                    @for (agenda of agendas; track agenda.name) {
+                        <td>{{agenda.name}}</td>
+                    } @empty {
+                        <li> There are no items. </li>
+                    }
+                    
+                </tr>
+                </table>
+            }@else { 
+                <span>Loading list...</span>
+            }
+        </div>
+    }
+    
+</div>

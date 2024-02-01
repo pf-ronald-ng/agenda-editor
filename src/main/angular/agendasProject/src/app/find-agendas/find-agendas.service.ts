@@ -2,10 +2,9 @@ import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Observable } from 'rxjs';
 
-import { AgendaDto } from '../../dto/AgendaDto';
-import { URLS } from '../../utils/Urls';
+import { URLS } from '../utils/Urls';
 
-@Injectable()
+@Injectable({providedIn: 'root',})
 export class FindAgendasService{
 	public url:string;
 
