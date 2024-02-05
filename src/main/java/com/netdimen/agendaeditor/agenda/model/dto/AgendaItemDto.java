@@ -7,6 +7,7 @@ import lombok.NonNull;
 @Data
 @NoArgsConstructor
 public class AgendaItemDto {
+    private Long id;
     @NonNull private int itemOrder;
     @NonNull private String phase;
     private String content;

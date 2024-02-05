@@ -5,6 +5,7 @@ import com.netdimen.agendaeditor.agenda.model.dto.AgendaDto;
 import com.netdimen.agendaeditor.agenda.model.dto.AgendaItemDto;
 import com.netdimen.agendaeditor.agenda.service.AgendaService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -23,8 +24,11 @@ public class AgendaController {
     }
 
     @GetMapping
-    public ResponseEntity<List<AgendaDto>> getAllAgendas() {
-        List<AgendaDto> agendas = agendaService.getAllAgendas();
+    public ResponseEntity<Page<AgendaDto>> getAllAgendas(
+            @RequestParam(required = false, value = "page", defaultValue = "0") int page,
+            @RequestParam(required = false, value = "size", defaultValue = "2") int size) {
+
+        Page<AgendaDto> agendas = agendaService.getAllAgendas(page, size);
         return ResponseEntity.ok(agendas);
     }
 
@@ -39,81 +43,53 @@ public class AgendaController {
     }
 
     @PostMapping
-    public ResponseEntity<Agenda> createAgenda(@RequestBody AgendaDto agendaDto) {
+    public ResponseEntity<AgendaDto> createAgenda(@RequestBody AgendaDto agendaDto) {
         try {
-            agendaService.createAgenda(agendaDto);
-            return ResponseEntity.status(HttpStatus.CREATED).build();
+            AgendaDto agendaDtoResult = agendaService.createAgenda(agendaDto);
+            return ResponseEntity.status(HttpStatus.CREATED).body(agendaDtoResult);
         } catch (IllegalArgumentException e) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
         }
     }
 
-    @PostMapping("/{agendaId}/items")
-    public ResponseEntity<Agenda> addAgendaItem(@PathVariable Long agendaId, @RequestBody AgendaItemDto agendaItemDto) {
+    @PostMapping("/{agendaId}/item")
+    public ResponseEntity<AgendaItemDto> addAgendaItem(@PathVariable Long agendaId, @RequestBody AgendaItemDto agendaItemDto) {
         try {
-            agendaService.addAgendaItem(agendaId, agendaItemDto);
-            return ResponseEntity.status(HttpStatus.CREATED).build();
+            AgendaItemDto agendaItemDtoResult = agendaService.addAgendaItem(agendaId, agendaItemDto);
+            return ResponseEntity.status(HttpStatus.CREATED).body(agendaItemDtoResult);
         } catch (IllegalArgumentException e) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
         }
     }
 
-    /*@GetMapping("/{agendaId}")
-    public String showAgenda(@PathVariable Long agendaId, Model model) {
-        Agenda agenda = agendaService.getAgendaById(agendaId);
-        model.addAttribute("agenda", agenda);
-        return "agenda";
+    @PutMapping("/{agendaId}/item")
+    public ResponseEntity<Agenda> updateAgendaItem(@PathVariable Long agendaId, @RequestBody AgendaItemDto agendaItemDto) {
+        try {
+            agendaService.updateAgendaItem(agendaId, agendaItemDto);
+            return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
+        }
     }
 
-    @GetMapping("/{agendaId}/edit")
-    public String editAgendaForm(@PathVariable Long agendaId, Model model) {
-        Agenda agenda = agendaService.getAgendaById(agendaId);
-        model.addAttribute("agenda", agenda);
-        return "editAgenda";
+    @DeleteMapping("/{agendaId}")
+    public ResponseEntity<Agenda> deleteAgenda(@PathVariable Long agendaId) {
+        try {
+            agendaService.deleteAgenda(agendaId);
+            return ResponseEntity.status(HttpStatus.ACCEPTED).build();
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+        }
     }
 
-    @PostMapping("/{agendaId}/edit")
-    public String editAgenda(@PathVariable Long agendaId, @ModelAttribute AgendaDto agendaDto) {
-        agendaService.updateAgenda(agendaId, agendaDto);
-        return "redirect:/agendas/" + agendaId;
+    @DeleteMapping("/item/{agendaItemId}")
+    public ResponseEntity<Agenda> deleteAgendaItem(@PathVariable Long agendaItemId) {
+        try {
+            agendaService.deleteAgendaItem(agendaItemId);
+            return ResponseEntity.status(HttpStatus.ACCEPTED).build();
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+        }
     }
-
-    @GetMapping("/{agendaId}/add-item")
-    public String addItemForm(@PathVariable Long agendaId, Model model) {
-        Agenda agenda = agendaService.getAgendaById(agendaId);
-        model.addAttribute("agenda", agenda);
-        model.addAttribute("agendaItem", new AgendaItemDto()); // Empty agenda item for the form
-        return "addItem";
-    }
-
-    @PostMapping("/{agendaId}/add-item")
-    public String addItem(
-            @PathVariable Long agendaId,
-            @ModelAttribute AgendaItemDto agendaItemDto,
-            RedirectAttributes redirectAttributes
-    ) {
-        agendaService.addAgendaItem(agendaId, agendaItemDto);
-        redirectAttributes.addFlashAttribute("message", "Agenda item added successfully!");
-        return "redirect:/agendas/" + agendaId;
-    }
-
-    @GetMapping("/{agendaId}/delete-item/{itemId}")
-    public String deleteItem(
-            @PathVariable Long agendaId,
-            @PathVariable Long itemId,
-            RedirectAttributes redirectAttributes
-    ) {
-        agendaService.deleteAgendaItem(agendaId, itemId);
-        redirectAttributes.addFlashAttribute("message", "Agenda item deleted successfully!");
-        return "redirect:/agendas/" + agendaId;
-    }
-
-    @Transactional
-    @PostMapping("/{agendaId}/save")
-    public String saveAgenda(@PathVariable Long agendaId, RedirectAttributes redirectAttributes) {
-        agendaService.saveAgenda(agendaId);
-        redirectAttributes.addFlashAttribute("message", "Agenda saved successfully!");
-        return "redirect:/agendas/" + agendaId;
-    }*/
 
 }

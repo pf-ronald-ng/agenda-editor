@@ -103,6 +103,7 @@ public class AgendaItem {
 
     public AgendaItemDto mapToAgendaItemDto() {
         AgendaItemDto agendaItemDto = new AgendaItemDto();
+        agendaItemDto.setId(this.id);
         agendaItemDto.setItemOrder(this.itemOrder);
         agendaItemDto.setPhase(this.phase);
         agendaItemDto.setContent(this.content);

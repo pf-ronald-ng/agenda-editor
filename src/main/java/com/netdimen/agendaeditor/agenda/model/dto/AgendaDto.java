@@ -9,6 +9,7 @@ import java.util.List;
 @Data
 @NoArgsConstructor
 public class AgendaDto {
+    private Long id;
     @NonNull private String name;
     @NonNull private List<AgendaItemDto> agendaItems;
 }

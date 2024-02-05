@@ -1,6 +1,7 @@
 import { CommonModule } from '@angular/common';
-import { Component } from '@angular/core';
+import { Component, NgModule } from '@angular/core';
 import { RouterLink, RouterOutlet } from '@angular/router';
+import { SaveAgendasComponent } from './save-agendas/save-agendas.component';
 
 @Component({
   selector: 'app-root',

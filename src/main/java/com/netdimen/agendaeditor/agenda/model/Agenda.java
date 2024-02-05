@@ -62,6 +62,7 @@ public class Agenda {
 
     public AgendaDto mapToAgendaDto() {
         AgendaDto agendaDto = new AgendaDto();
+        agendaDto.setId(this.id);
         agendaDto.setName(this.name);
 
         List<AgendaItemDto> agendaItemsDto = this.agendaItems.stream()

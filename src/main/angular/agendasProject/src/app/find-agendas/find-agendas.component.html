@@ -1,6 +1,6 @@
 <div>
     <div align="center">
-        <h3>Haga click on Find</h3>
+        <h3>Find Agendas</h3>
     
         <button type="submit" class="btn btn-secondary" (click)="findAgendas()" >Find</button>
     </div>
@@ -8,28 +8,151 @@
     <br/>
     
     @if(showAgendas){ 
-        <div align="center" class="listado">
-            <h3>List of Agendas</h3>
-        
-            @if(agendas){ 
-                <table class="table">
-                <tr>
-                    <th>Name</th>
-                    <th>Agenda Items</th>
-                </tr>
-                <tr>
+        <main role="main" class="container">
+            <div align="center" class="listado">
+                <h3>Agendas</h3>
+                <div class="mb-3" align="left">
+                    <button type="button" class="btn btn-secondary" (click)="addAgenda()">Add Agenda</button>
+                </div>
+                @if(agendas){ 
+                    <table class="table table-dark table-striped">
+                        <thead>
+                            <tr>
+                                <th>Name</th>
+                                <th>Agenda Items</th>
+                            </tr>
+                        </thead>
                     @for (agenda of agendas; track agenda.name) {
-                        <td>{{agenda.name}}</td>
+                        <tbody>
+                            <tr>
+                                <td>{{agenda.name}}</td>
+                                <td>
+                                    <div class="mb-3">
+                                        <div class="btn-group">
+                                            <button type="button" class="btn btn-secondary" (click)="showAgendaItems(agenda)">View</button>
+                                        </div>
+                                    </div>
+                                    <div class="mb-3">
+                                        <div class="btn-group">
+                                            <button type="button" class="btn btn-secondary" (click)="deleteAgenda(agenda)">Delete</button>
+                                        </div>
+                                    </div>
+                                </td>
+                            </tr>
+                        </tbody>
                     } @empty {
                         <li> There are no items. </li>
                     }
-                    
-                </tr>
-                </table>
-            }@else { 
-                <span>Loading list...</span>
-            }
-        </div>
+                    </table>
+                }@else { 
+                    <span>Loading list...</span>
+                }
+            </div>
+        </main>
+    }
+
+    @if(showAgendaItemsTable){ 
+        <main role="main" class="container">
+            <div class="mb-3">
+                <label for="exampleFormControlInput1" class="form-label">Name</label>
+                <input type="text" class="form-control" id="exampleFormControlInput1" placeholder="{{agenda.name}}">
+            </div>
+            <div class="mb-3">
+                <button type="button" class="btn btn-secondary" (click)="addAgendaItems()">Add Item</button>
+            </div>
+            <div class="mb-3">
+
+                @if(agendaItems){ 
+
+                    <table class="table table-dark table-striped">
+                        <thead>
+                            <tr>
+                                <th>Order</th>
+                                <th>Phase</th>
+                                <th>Content</th>
+                                <th>Oobjectives</th>
+                                <th>Duration</th>
+                                <th>Creditable</th>
+                                <th>Options</th>
+                            </tr>
+                        </thead>
+                    @for (item of agendaItems; track item.itemOrder) {
+                        <tbody>
+                            <tr>
+                                <td><input class="form-control" type="text" value="{{item.itemOrder}}" aria-label="Disabled input example" disabled readonly></td>
+                                <td><input class="form-control" type="text" value="{{item.phase}}" aria-label="Disabled input example" disabled readonly></td>
+                                <td><input class="form-control" type="text" value="{{item.content}}" aria-label="Disabled input example" disabled readonly></td>
+                                <td><input class="form-control" type="text" value="{{item.objectives}}" aria-label="Disabled input example" disabled readonly></td>
+                                <td><input class="form-control" type="text" value="{{item.duration}}" aria-label="Disabled input example" disabled readonly></td>
+                                <td>
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="checkbox" [(ngModel)]="item.creditable" aria-label="Disabled input example" disabled readonly>
+                                        <label class="form-check-label" for="flexCheckChecked">
+                                            Creditable
+                                        </label>
+                                    </div>
+                                </td>
+                                <td>
+                                    <button type="button" class="btn btn-secondary" (click)="editAgendaItem(item)">Edit</button>
+                                    <button type="button" class="btn btn-secondary" (click)="deleteAgendaItem(item)">Delete</button>
+                                </td>
+                            </tr>
+                        </tbody>
+                    } @empty {
+                        <li> There are no items. </li>
+                    }
+                    </table>
+                    <label>Total Duration: {{ getTotalDuration() }}</label>   <label>Total Creditable Minutes: {{ getTotalCreditableMinutes() }}</label>
+                    @if(getTotalCreditableMinutes() < 15){ 
+                        <div class="text-warning">
+                            Warning: Total creditable minutes are less than 15!
+                        </div>
+                    }
+                }@else { 
+                    <span>Loading list...</span>
+                }
+            </div>
+        </main>
+    }
+
+    @if(saveAgendaView){ 
+        <main class="container">
+            <div class="jumbotron">
+                <app-save-agendas (fromSaveAgendas)="toBack($event)"></app-save-agendas>
+                <div align="right">
+                    <button (click)="cancel()" class="btn btn-danger"> Cancelar</button>
+                </div>
+            </div>
+        </main>
+    }
+
+    @if(saveAgendaItemView){ 
+        <main class="container">
+            <div class="jumbotron">
+                <app-save-agenda-item 
+                    [agendaSelected]="agenda"
+                    (fromSaveAgendas)="toBackFromSave($event)"
+                ></app-save-agenda-item>
+                <div align="right">
+                    <button (click)="cancelItems()" class="btn btn-danger"> Cancelar</button>
+                </div>
+            </div>
+        </main>
+    }
+
+    @if(updateAgendaItemView){ 
+        <main class="container">
+            <div class="jumbotron">
+                <app-update-agenda-item 
+                    [agendaSelected]="agenda" 
+                    [agendaItemSelected]="agendaItemDto"
+                    (fromSaveAgendas)="toBackFromUpdate($event)"
+                ></app-update-agenda-item>
+                <div align="right">
+                    <button (click)="cancelItems()" class="btn btn-danger"> Cancelar</button>
+                </div>
+            </div>
+        </main>
     }
     
 </div>

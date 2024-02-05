@@ -7,6 +7,9 @@ import com.netdimen.agendaeditor.agenda.model.dto.AgendaItemDto;
 import com.netdimen.agendaeditor.agenda.repository.AgendaItemRepository;
 import com.netdimen.agendaeditor.agenda.repository.AgendaRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -25,10 +28,8 @@ public class AgendaService {
         this.agendaItemRepository = agendaItemRepository;
     }
 
-    public List<AgendaDto> getAllAgendas() {
-        return agendaRepository.findAll().stream()
-                .map(Agenda::mapToAgendaDto)
-                .collect(Collectors.toList());
+    public Page<AgendaDto> getAllAgendas(int page, int size) {
+        return agendaRepository.findAll(PageRequest.of(page, size)).map(Agenda::mapToAgendaDto);
     }
 
     public AgendaDto getAgendaById(Long agendaId) {
@@ -37,16 +38,19 @@ public class AgendaService {
     }
 
     @Transactional
-    public void createAgenda(AgendaDto agendaDto) {
+    public AgendaDto createAgenda(AgendaDto agendaDto) {
         validateAgendaDto(agendaDto);
 
-        //Agenda agenda = Agenda.builder().name(agendaDto.getName()).build();
         Agenda agenda = new Agenda();
         agenda.setName(agendaDto.getName());
 
-        agendaRepository.save(agenda);
+        AgendaDto agendaDtoResult = agendaRepository.save(agenda).mapToAgendaDto();
 
-        createAgendaItems(agendaDto.getAgendaItems(), agenda);
+        List<AgendaItemDto> agendaItemsDto = createAgendaItems(agendaDto.getAgendaItems(), agenda);
+
+        agendaDtoResult.setAgendaItems(agendaItemsDto);
+
+        return agendaDtoResult;
     }
 
     @Transactional
@@ -73,8 +77,7 @@ public class AgendaService {
         return existingAgenda;
     }
 
-    @Transactional
-    public void addAgendaItem(Long agendaId, AgendaItemDto agendaItemDto) {
+    public AgendaItemDto addAgendaItem(Long agendaId, AgendaItemDto agendaItemDto) {
         Agenda agenda = agendaRepository.findById(agendaId)
                 .orElseThrow(() -> new IllegalArgumentException("Agenda not found with id: " + agendaId));
 
@@ -89,36 +92,55 @@ public class AgendaService {
 
         agendaItem.setAgenda(agenda);
 
-        agendaItemRepository.save(agendaItem);
+        return agendaItemRepository.save(agendaItem).mapToAgendaItemDto();
+    }
 
-        agenda.getAgendaItems().add(agendaItem);
-        agendaRepository.save(agenda);
+    public void updateAgendaItem(Long agendaId, AgendaItemDto agendaItemDto) {
+        Agenda agenda = agendaRepository.findById(agendaId)
+                .orElseThrow(() -> new IllegalArgumentException("Agenda not found with id: " + agendaId));
+
+        AgendaItem existingAgendaItem = agendaItemRepository.findById(agendaItemDto.getId())
+                .orElseThrow(() -> new IllegalArgumentException("AgendaItem not found with id: " + agendaItemDto.getId()));
+
+        existingAgendaItem.setItemOrder(agendaItemDto.getItemOrder());
+        existingAgendaItem.setPhase(agendaItemDto.getPhase());
+        existingAgendaItem.setContent(agendaItemDto.getContent());
+        existingAgendaItem.setObjectives(agendaItemDto.getObjectives());
+        existingAgendaItem.setDuration(agendaItemDto.getDuration());
+        existingAgendaItem.setCreditable(agendaItemDto.isCreditable());
+
+        existingAgendaItem.setAgenda(agenda);
+
+        agendaItemRepository.save(existingAgendaItem);
     }
 
     @Transactional
     public void deleteAgenda(Long agendaId) {
-        // Ensure that the cascade delete is performed for associated AgendaItems
         Agenda agendaToDelete = agendaRepository.findById(agendaId)
                 .orElseThrow(() -> new IllegalArgumentException("Agenda not found"));
+
         agendaToDelete.getAgendaItems().forEach(agendaItemRepository::delete);
 
-        // Delete the Agenda
         agendaRepository.deleteById(agendaId);
     }
 
+    public void deleteAgendaItem(Long agendaItemId) {
+        AgendaItem existingAgendaItem = agendaItemRepository.findById(agendaItemId)
+                .orElseThrow(() -> new IllegalArgumentException("AgendaItem not found with id: " + agendaItemId));
+
+        agendaItemRepository.deleteById(existingAgendaItem.getId());
+    }
+
     private void validateAgendaDto(AgendaDto agendaDto) {
-        // Implement validation logic for AgendaDto
         if (agendaDto == null) {
             throw new IllegalArgumentException("AgendaDto must not be null.");
         }
     }
 
-    private void createAgendaItems(List<AgendaItemDto> agendaItemDtos, Agenda agenda) {
-        for (AgendaItemDto agendaItemDto : agendaItemDtos) {
-            // Validate agenda item data
+    private List<AgendaItemDto> createAgendaItems(List<AgendaItemDto> agendaItemsDto, Agenda agenda) {
+        for (AgendaItemDto agendaItemDto : agendaItemsDto) {
             validateAgendaItemDto(agendaItemDto);
 
-            // Create agenda item entity
             AgendaItem agendaItem = new AgendaItem(
                     agendaItemDto.getItemOrder(),
                     agendaItemDto.getPhase(),
@@ -129,13 +151,15 @@ public class AgendaService {
                     agenda
             );
 
-            // Save agenda item entity to the database
-            agendaItemRepository.save(agendaItem);
+            agendaItem = agendaItemRepository.save(agendaItem);
+
+            agendaItemDto.setId(agendaItem.getId());
         }
+
+        return agendaItemsDto;
     }
 
     private void validateAgendaItemDto(AgendaItemDto agendaItemDto) {
-        // Implement validation logic for AgendaItemDto
         if (agendaItemDto == null) {
             throw new IllegalArgumentException("AgendaItemDto must not be null.");
         }
