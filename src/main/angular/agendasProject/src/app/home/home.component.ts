@@ -8,7 +8,7 @@ import { Component } from '@angular/core';
   styleUrl: './home.component.scss'
 })
 export class HomeComponent {
-  public titulo = "Welcome to Agenda Book";
+  public titulo = "Welcome to Agenda Editor";
 
 	constructor(
 	){
