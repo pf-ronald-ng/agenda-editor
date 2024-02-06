@@ -8,19 +8,19 @@ import com.netdimen.agendaeditor.agenda.repository.AgendaItemRepository;
 import com.netdimen.agendaeditor.agenda.repository.AgendaRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Service
 public class AgendaService {
 
     private final AgendaRepository agendaRepository;
     private final AgendaItemRepository agendaItemRepository;
+
+    private static final String AGENDA_NOT_FOUND = "Agenda not found with id: ";
 
     @Autowired
     public AgendaService(AgendaRepository agendaRepository, AgendaItemRepository agendaItemRepository) {
@@ -60,7 +60,7 @@ public class AgendaService {
 
         // Retrieve the existing agenda entity
         Agenda existingAgenda = agendaRepository.findById(agendaId)
-                .orElseThrow(() -> new RuntimeException("Agenda not found with id: " + agendaId));
+                .orElseThrow(() -> new RuntimeException(AGENDA_NOT_FOUND + agendaId));
 
         // Update agenda properties
         existingAgenda.setName(agendaDto.getName());
@@ -79,7 +79,7 @@ public class AgendaService {
 
     public AgendaItemDto addAgendaItem(Long agendaId, AgendaItemDto agendaItemDto) {
         Agenda agenda = agendaRepository.findById(agendaId)
-                .orElseThrow(() -> new IllegalArgumentException("Agenda not found with id: " + agendaId));
+                .orElseThrow(() -> new IllegalArgumentException(AGENDA_NOT_FOUND + agendaId));
 
         AgendaItem agendaItem = new AgendaItem();
 
@@ -97,7 +97,7 @@ public class AgendaService {
 
     public void updateAgendaItem(Long agendaId, AgendaItemDto agendaItemDto) {
         Agenda agenda = agendaRepository.findById(agendaId)
-                .orElseThrow(() -> new IllegalArgumentException("Agenda not found with id: " + agendaId));
+                .orElseThrow(() -> new IllegalArgumentException(AGENDA_NOT_FOUND + agendaId));
 
         AgendaItem existingAgendaItem = agendaItemRepository.findById(agendaItemDto.getId())
                 .orElseThrow(() -> new IllegalArgumentException("AgendaItem not found with id: " + agendaItemDto.getId()));

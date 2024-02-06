@@ -13,8 +13,9 @@ export class FindAgendasService{
 		this.url = URLS.HOST + URLS.API_URL;
 	}
 
-	findAgendas(page: string, size: string):Observable<any>{
-        return this._http.get(this.url+"?page="+page+"&size="+size);
+	findAgendas(page: number, size: number):Observable<any>{
+		const params = { page: page.toString(), size: size.toString() };
+        return this._http.get(this.url, { params });
 	}
 
 	deleteAgenda(agendaId: number):Observable<any>{

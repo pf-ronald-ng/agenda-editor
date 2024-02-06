@@ -9,6 +9,7 @@ import { SaveAgendasComponent } from '../save-agendas/save-agendas.component';
 import { SaveAgendaItemComponent } from '../save-agenda-item/save-agenda-item.component';
 import { UpdateAgendaItemComponent } from '../update-agenda-item/update-agenda-item.component';
 import { FormsModule } from '@angular/forms';
+import { CdkDragDrop, CdkDropList, CdkDrag, moveItemInArray } from '@angular/cdk/drag-drop';
 
 @Component({
   selector: 'app-find-agendas',
@@ -19,7 +20,9 @@ import { FormsModule } from '@angular/forms';
     SaveAgendasComponent,
     SaveAgendaItemComponent,
     UpdateAgendaItemComponent,
-    FormsModule
+    FormsModule,
+    CdkDropList,
+    CdkDrag
   ],
   providers: [FindAgendasService],
   templateUrl: './find-agendas.component.html',
@@ -34,11 +37,14 @@ export class FindAgendasComponent {
   public agendaItemDto = new AgendaItemDto();
   public agenda: AgendaDto = new AgendaDto;
   public saveAgendaView: boolean;
-  public totalDuration: number;
 
   public saveAgendaItemView: boolean;
   public updateAgendaItemView: boolean;
   public totalCreditable: number;
+  public size: number;
+  public page: number;
+  private lastPage: boolean;
+  public totalPages: number;
 
   constructor(private _findAgendasService: FindAgendasService) {
     this.showAgendas = false;
@@ -50,28 +56,59 @@ export class FindAgendasComponent {
 
     this.saveAgendaItemView = false;
     this.updateAgendaItemView = false;
-    this.totalDuration = 0;
     this.totalCreditable = 0;
+    this.size = 2;
+    this.page = 0;
+    this.lastPage = false;
+    this.totalPages = 0;
+  }
+
+  findAgendasNext() {
+    if(!this.lastPage){
+      this.page += 1;
+      this.findAgendas();
+    }
+  }
+
+  findAgendasPrev() {
+    if(this.page > 0){
+      this.page -= 1;
+      this.findAgendas();
+    }
+  }
+
+  findAgendasFirst() {
+    this.page = 0;
+    this.findAgendas();
+  }
+
+  findAgendasLast() {
+    this.page = this.totalPages - 1;
+    this.findAgendas();
   }
 
   findAgendas() {
-    this.subscription.add(
-      this._findAgendasService.findAgendas("0", "100").subscribe({
-        next: (result) => {
-          if (!result || result.length === 0) {
-            this.handleNoAgendas();
-            return;
+    if(this.size){
+      this.subscription.add(
+        this._findAgendasService.findAgendas(this.page, this.size).subscribe({
+          next: (result) => {
+            if (!result || result.length === 0) {
+              this.handleNoAgendas();
+              return;
+            }
+    
+            this.agendas = result.content;
+            this.lastPage = result.last;
+            this.totalPages = result.totalPages;
+            this.handleAgendasFound();
+          },
+          error: (error) => {
+            console.error(error);
+            this.handleServerError();
           }
-  
-          this.agendas = result.content;
-          this.handleAgendasFound();
-        },
-        error: (error) => {
-          console.error(error);
-          this.handleServerError();
-        }
-      })
-    );
+        })
+      );
+    }
   }
   
   private handleNoAgendas() {
@@ -229,21 +266,45 @@ export class FindAgendasComponent {
     this.updateAgendaItemView = false;
 	}
 
-  getTotalDuration(): number {
-    this.totalDuration = 0;
+  getTotalDuration(): string {
+    let totalDuration = 0;
     this.agendaItems?.map(item => {
-      this.totalDuration += item.duration || 0;
+      totalDuration += item.duration || 0;
     });
 
-    return this.totalDuration;
+    return this.formatMinutesToHoursAndMinutes(totalDuration);
   }
 
-  getTotalCreditableMinutes(): number {
+  getTotalCreditableMinutes(): string {
     this.totalCreditable = 0;
     this.agendaItems?.filter(item => item.creditable).map(item => {
         this.totalCreditable += item.duration || 0;
       });
 
-    return this.totalCreditable;
+    return this.formatMinutesToHoursAndMinutes(this.totalCreditable);
+  }
+
+  formatMinutesToHoursAndMinutes(totalMinutes: number): string {
+    const hours = Math.floor(totalMinutes / 60);
+    const minutes = totalMinutes % 60;
+  
+    let formattedString = '';
+  
+    if (hours > 0) {
+      formattedString += `${hours} ${hours === 1 ? 'hour' : 'hours'}`;
+    }
+  
+    if (minutes > 0) {
+      if (formattedString.length > 0) {
+        formattedString += ' ';
+      }
+      formattedString += `${minutes} ${minutes === 1 ? 'minute' : 'minutes'}`;
+    }
+  
+    return formattedString.trim();
+  }
+
+  onDrop(event: CdkDragDrop<AgendaItemDto[]>): void {
+    moveItemInArray(this.agendaItems!, event.previousIndex, event.currentIndex);
   }
 }

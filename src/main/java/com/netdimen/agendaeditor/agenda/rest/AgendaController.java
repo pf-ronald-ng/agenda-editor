@@ -1,6 +1,5 @@
 package com.netdimen.agendaeditor.agenda.rest;
 
-import com.netdimen.agendaeditor.agenda.model.Agenda;
 import com.netdimen.agendaeditor.agenda.model.dto.AgendaDto;
 import com.netdimen.agendaeditor.agenda.model.dto.AgendaItemDto;
 import com.netdimen.agendaeditor.agenda.service.AgendaService;
@@ -9,8 +8,6 @@ import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
 
 @RestController
 @RequestMapping("/agendas")
@@ -63,7 +60,7 @@ public class AgendaController {
     }
 
     @PutMapping("/{agendaId}/item")
-    public ResponseEntity<Agenda> updateAgendaItem(@PathVariable Long agendaId, @RequestBody AgendaItemDto agendaItemDto) {
+    public ResponseEntity<AgendaDto> updateAgendaItem(@PathVariable Long agendaId, @RequestBody AgendaItemDto agendaItemDto) {
         try {
             agendaService.updateAgendaItem(agendaId, agendaItemDto);
             return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
@@ -73,7 +70,7 @@ public class AgendaController {
     }
 
     @DeleteMapping("/{agendaId}")
-    public ResponseEntity<Agenda> deleteAgenda(@PathVariable Long agendaId) {
+    public ResponseEntity<AgendaDto> deleteAgenda(@PathVariable Long agendaId) {
         try {
             agendaService.deleteAgenda(agendaId);
             return ResponseEntity.status(HttpStatus.ACCEPTED).build();
@@ -83,7 +80,7 @@ public class AgendaController {
     }
 
     @DeleteMapping("/item/{agendaItemId}")
-    public ResponseEntity<Agenda> deleteAgendaItem(@PathVariable Long agendaItemId) {
+    public ResponseEntity<AgendaDto> deleteAgendaItem(@PathVariable Long agendaItemId) {
         try {
             agendaService.deleteAgendaItem(agendaItemId);
             return ResponseEntity.status(HttpStatus.ACCEPTED).build();
