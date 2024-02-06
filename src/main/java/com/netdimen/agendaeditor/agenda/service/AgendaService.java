@@ -55,23 +55,17 @@ public class AgendaService {
 
     @Transactional
     public Agenda updateAgenda(Long agendaId, AgendaDto agendaDto) {
-        // Validate input data
         validateAgendaDto(agendaDto);
 
-        // Retrieve the existing agenda entity
         Agenda existingAgenda = agendaRepository.findById(agendaId)
                 .orElseThrow(() -> new RuntimeException(AGENDA_NOT_FOUND + agendaId));
 
-        // Update agenda properties
         existingAgenda.setName(agendaDto.getName());
 
-        // Delete existing agenda items
         agendaItemRepository.deleteByAgenda(existingAgenda);
 
-        // Create and associate updated agenda items
         createAgendaItems(agendaDto.getAgendaItems(), existingAgenda);
 
-        // Save the updated agenda entity to the database
         agendaRepository.save(existingAgenda);
 
         return existingAgenda;
