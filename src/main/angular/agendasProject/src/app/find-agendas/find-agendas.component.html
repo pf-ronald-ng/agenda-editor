@@ -10,7 +10,6 @@
     @if(showAgendas){ 
         <main role="main" class="container">
             <div align="center" class="listado">
-                <h3>Agendas</h3>
                 <div class="mb-3" align="left">
                     <button type="button" class="btn btn-secondary" (click)="addAgenda()">Add Agenda</button>
                 </div>
@@ -106,8 +105,7 @@
     @if(showAgendaItemsTable){ 
         <main role="main" class="container">
             <div class="mb-3">
-                <label for="exampleFormControlInput1" class="form-label">Name</label>
-                <input type="text" class="form-control" id="exampleFormControlInput1" placeholder="{{agenda.name}}">
+                <p class="card-text" align="left"><strong>Name: </strong>{{agenda.name}}</p>
             </div>
             <div class="mb-3">
                 <button type="button" class="btn btn-secondary" (click)="addAgendaItems()">Add Item</button>
@@ -123,7 +121,7 @@
                                     <th>Order</th>
                                     <th>Phase</th>
                                     <th>Content</th>
-                                    <th>Oobjectives</th>
+                                    <th>Objectives</th>
                                     <th>Duration (min)</th>
                                     <th>Creditable</th>
                                     <th>Options</th>

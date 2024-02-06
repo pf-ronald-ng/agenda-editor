@@ -167,8 +167,8 @@ export class FindAgendasComponent {
       this.subscription.add(
         this._findAgendasService.deleteAgenda(agenda.id).subscribe({
           next: (result) => {    
-            this.agendas = this.agendas?.filter(item => item !== agenda) ?? [];
             alert('Agenda deleted!!');
+            this.findAgendas();
           },
           error: (error) => {
             console.error(error);
@@ -220,7 +220,7 @@ export class FindAgendasComponent {
   }
 
   toBack(event: AgendaDto){
-    this.agendas?.push(event);
+    this.findAgendas();
     this.showAgendas = true;
     this.saveAgendaView = false;
     this.showAgendaItemsTable = false;

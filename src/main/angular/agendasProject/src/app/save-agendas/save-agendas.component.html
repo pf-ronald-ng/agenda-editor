@@ -1,0 +1,69 @@
+<form #formSaveAgendas="ngForm" (ngSubmit)="save()">
+	<table class="table table-dark table-striped">
+		<thead>
+			<tr>
+				<th>Create Agenda</th>
+			</tr>
+		</thead>
+		<tbody>
+			<tr>
+				<td>
+					<div class="mb-3 mt-3">
+						<label for="exampleInputEmail1" class="form-label" id="nameIdLabel">Name:</label>
+						<input type="text" class="form-control" id="nameId" aria-describedby="emailHelp" name="name" #name="ngModel" [(ngModel)]="agenda.name" required>
+						@if(name.touched && !name.valid){
+							<small id="emailHelp" class="form-text text-muted">The name is wrong!!</small>
+						}
+					</div>
+					<h5 class="card-title"><strong>Item</strong></h5>
+					<div class="mb-3">
+						<label for="exampleInputEmail1" class="form-label" id="orderIdLabel">Order:</label>
+						<input type="number" class="form-control" id="orderId" aria-describedby="emailHelp" name="order" #order="ngModel" [(ngModel)]="agendaItemDto.itemOrder" required pattern="[0-9]+">
+						@if(order.touched && !order.valid){
+							<small id="emailHelp" class="form-text text-muted">The order is wrong!!</small>
+						}
+					</div>
+					<div class="mb-3">
+						<label for="exampleInputEmail1" class="form-label" id="phaseIdLabel">Phase:</label>
+						<input type="text" class="form-control" id="phaseId" aria-describedby="emailHelp" name="phase" #phase="ngModel" [(ngModel)]="agendaItemDto.phase" required >
+						@if(phase.touched && !phase.valid){
+							<small id="emailHelp" class="form-text text-muted">The phase is wrong!!</small>
+						}
+					</div>
+					<div class="mb-3">
+						<label for="exampleInputEmail1" class="form-label" id="contentIdLabel">Content:</label>
+						<textarea class="form-control" id="contentId" aria-describedby="emailHelp" name="content" #content="ngModel" [(ngModel)]="agendaItemDto.content" 
+							[required]="agendaItemDto.creditable"></textarea>
+						@if(content.touched && !content.valid){
+							<small content.touched && !content.valid id="emailHelp" class="form-text text-muted">The Content is wrong!!</small>
+						}
+					</div>
+					<div class="mb-3">
+						<label for="exampleInputEmail1" class="form-label" id="objectivesIdLabel">Objectives:</label>
+						<textarea class="form-control" id="objectivesId" rows="3" aria-describedby="emailHelp" name="objectives" #objectives="ngModel" [(ngModel)]="agendaItemDto.objectives"></textarea>
+						@if(objectives.touched && !objectives.valid){
+							<small id="emailHelp" class="form-text text-muted">The objectives is wrong!!</small>
+						}
+					</div>
+					<div class="mb-3">
+						<label for="exampleInputEmail1" class="form-label" id="durationIdLabel">Duration (min):</label>
+						<input type="number" class="form-control" id="durationId" aria-describedby="emailHelp" name="duration" #duration="ngModel" [(ngModel)]="agendaItemDto.duration" 
+							[required]="agendaItemDto.creditable" required pattern="[0-9]+">
+						@if(duration.touched && !duration.valid){
+							<small id="emailHelp" class="form-text text-muted">The duration is wrong!!</small>
+						}
+					</div>
+					<div class="mb-3">
+						<div class="form-check">
+							<input class="form-check-input" type="checkbox" value="" id="creditableId2" name="creditable" #creditable="ngModel" [(ngModel)]="agendaItemDto.creditable">
+							<label class="form-check-label" for="flexCheckChecked">
+								Creditable
+							</label>
+						</div>
+					</div>
+					<button type="submit" class="btn btn-secondary" [disabled]="!formSaveAgendas.form.valid">Save</button>
+				</td>
+			</tr>
+		</tbody>
+	</table>
+</form>
