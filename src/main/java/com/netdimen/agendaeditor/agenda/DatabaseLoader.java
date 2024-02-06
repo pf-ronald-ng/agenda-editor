@@ -1,9 +1,9 @@
 package com.netdimen.agendaeditor.agenda;
 
-import com.netdimen.agendaeditor.agenda.Agenda;
-import com.netdimen.agendaeditor.agenda.AgendaItem;
-import com.netdimen.agendaeditor.agenda.AgendaItemRepository;
-import com.netdimen.agendaeditor.agenda.AgendaRepository;
+import com.netdimen.agendaeditor.agenda.model.Agenda;
+import com.netdimen.agendaeditor.agenda.model.AgendaItem;
+import com.netdimen.agendaeditor.agenda.repository.AgendaItemRepository;
+import com.netdimen.agendaeditor.agenda.repository.AgendaRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.stereotype.Component;
@@ -32,7 +32,8 @@ public class DatabaseLoader implements CommandLineRunner {
     }
 
     private void createAgendaWithItem(int count) {
-        Agenda agenda = new Agenda("Agenda " + count);
+        Agenda agenda = new Agenda();
+        agenda.setName("Agenda " + count);
         AgendaItem item = new AgendaItem(1, "Welcome", "", "", 15l, false, agenda);
         agendaRepository.save(agenda);
         agendaItemRepository.save(item);
