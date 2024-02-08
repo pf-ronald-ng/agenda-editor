@@ -1,7 +1,7 @@
 package com.netdimen.agendaeditor.agenda;
 
-import com.netdimen.agendaeditor.agenda.models.Agenda;
-import com.netdimen.agendaeditor.agenda.models.AgendaItem;
+import com.netdimen.agendaeditor.agenda.models.Agenda.Agenda;
+import com.netdimen.agendaeditor.agenda.models.Agenda.AgendaItem;
 import com.netdimen.agendaeditor.agenda.repositories.AgendaItemRepository;
 import com.netdimen.agendaeditor.agenda.repositories.AgendaRepository;
 import org.springframework.beans.factory.annotation.Autowired;
