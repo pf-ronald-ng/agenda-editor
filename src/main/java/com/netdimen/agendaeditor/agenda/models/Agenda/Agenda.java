@@ -1,7 +1,8 @@
-package com.netdimen.agendaeditor.agenda.models;
+package com.netdimen.agendaeditor.agenda.models.Agenda;
 
 import lombok.Data;
 import lombok.Getter;
+import lombok.ToString;
 
 import javax.persistence.*;
 import java.util.ArrayList;
@@ -20,8 +21,11 @@ public class Agenda {
     @Getter
     private String name;
 
-    @OneToMany(mappedBy = "agenda")
+    @ToString.Exclude
+    @OneToMany(mappedBy = "agenda", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<AgendaItem> agendaItemList = new ArrayList<>();
+
+    private String owner;
 
     private Agenda() {
 
