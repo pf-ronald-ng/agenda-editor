@@ -1,27 +1,34 @@
 package com.netdimen.agendaeditor.agenda.controllers;
 
-import com.netdimen.agendaeditor.agenda.models.AgendaItem;
+import com.netdimen.agendaeditor.agenda.models.Agenda.AgendaItem;
 import com.netdimen.agendaeditor.agenda.repositories.AgendaItemRepository;
 
 import org.springframework.http.ResponseEntity;
-import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.util.UriComponentsBuilder;
 
 import java.net.URI;
+import java.util.List;
 import java.util.Optional;
 
-@Controller
+@CrossOrigin
 @RestController
 @RequestMapping("/agendaItem")
 public class AgendaItemController {
     private AgendaItemRepository agendaItemRepository;
 
+
     public AgendaItemController(AgendaItemRepository agendaItemRepository) {
 
         this.agendaItemRepository = agendaItemRepository;
     }
+    @GetMapping("/agenda/{agendaId}")
+    public ResponseEntity<List<AgendaItem>> index(@PathVariable long agendaId) {
 
+        List<AgendaItem> result = agendaItemRepository.findByAgendaId(agendaId);
+        return  ResponseEntity.ok(result);
+
+    }
     @GetMapping("/{agendaItemId}")
     public ResponseEntity<AgendaItem> findById(@PathVariable Long agendaItemId) {
         Optional<AgendaItem> agendaItemOptional = agendaItemRepository.findById(agendaItemId);
@@ -47,26 +54,24 @@ public class AgendaItemController {
     }
 
     @PutMapping("/{requestedId}")
-    private ResponseEntity<Object> putAgenda(@PathVariable Long requestedId, @RequestBody AgendaItem agendaUpdate) {
+    private ResponseEntity<Object> putAgendaItem(@PathVariable Long requestedId, @RequestBody AgendaItem agendaUpdate) {
         Optional<AgendaItem> optionalAgendaItem = agendaItemRepository.findById(requestedId);
 
         return optionalAgendaItem.map(agenda -> {
-            AgendaItem updatedAgenda = new AgendaItem(
-                    agenda.getId(),
-                    agendaUpdate.getItemOrder(),
-                    agendaUpdate.getPhase(),
-                    agendaUpdate.getContent(),
-                    agendaUpdate.getObjectives(),
-                    agendaUpdate.getDuration(),
-                    agendaUpdate.isCreditable(),
-                    agendaUpdate.getAgenda());
-            agendaItemRepository.save(updatedAgenda);
+            Optional.ofNullable(agendaUpdate.getItemOrder()).ifPresent(agenda::setItemOrder);
+            Optional.ofNullable(agendaUpdate.getPhase()).ifPresent(agenda::setPhase);
+            Optional.ofNullable(agendaUpdate.getContent()).ifPresent(agenda::setContent);
+            Optional.ofNullable(agendaUpdate.getObjectives()).ifPresent(agenda::setObjectives);
+            Optional.ofNullable(agendaUpdate.getDuration()).ifPresent(agenda::setDuration);
+            Optional.ofNullable(agendaUpdate.isCreditable()).ifPresent(agenda::setCreditable);
+            Optional.ofNullable(agendaUpdate.getAgenda()).ifPresent(agenda::setAgenda);
+            agendaItemRepository.save(agenda);
             return ResponseEntity.noContent().build();
         }).orElseGet(() -> ResponseEntity.notFound().build());
     }
 
     @DeleteMapping("/{id}")
-    private ResponseEntity<Void> deleteAgenda(@PathVariable Long id) {
+    private ResponseEntity<Void> deleteAgendaItem(@PathVariable Long id) {
 
         if (!agendaItemRepository.existsById(id)) {
             return ResponseEntity.notFound().build();

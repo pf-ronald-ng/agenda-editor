@@ -1,16 +1,17 @@
 package com.netdimen.agendaeditor.agenda.controllers;
 
-import com.netdimen.agendaeditor.agenda.models.Agenda;
+import com.netdimen.agendaeditor.agenda.models.Agenda.Agenda;
 import com.netdimen.agendaeditor.agenda.repositories.AgendaRepository;
 import org.springframework.http.ResponseEntity;
-import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.util.UriComponentsBuilder;
 
 import java.net.URI;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 
-@Controller
+@CrossOrigin
 @RestController
 @RequestMapping("/agenda")
 public class AgendaController {
@@ -18,14 +19,14 @@ public class AgendaController {
     private AgendaRepository agendaRepository;
 
     public AgendaController(AgendaRepository agendaRepository) {
-
         this.agendaRepository = agendaRepository;
     }
 
     @GetMapping("/")
-    public String index() {
-
-        return "index";
+    public ResponseEntity<List<Agenda>> index() {
+        List<Agenda> result = new ArrayList<>();
+        agendaRepository.findAll().forEach(result::add);
+        return ResponseEntity.ok(result);
     }
     @GetMapping("/{agendaId}")
     public ResponseEntity<Agenda> findById(@PathVariable Long agendaId) {
