@@ -1,6 +1,6 @@
 package com.netdimen.agendaeditor.agenda.repositories;
 
-import com.netdimen.agendaeditor.agenda.models.Agenda.AgendaItem;
+import com.netdimen.agendaeditor.agenda.models.AgendaItem;
 
 import org.springframework.data.repository.CrudRepository;
 

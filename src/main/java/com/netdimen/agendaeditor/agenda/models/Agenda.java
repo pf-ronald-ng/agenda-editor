@@ -1,4 +1,5 @@
-package com.netdimen.agendaeditor.agenda.models.Agenda;
+package com.netdimen.agendaeditor.agenda.models;
+
 
 import lombok.Data;
 import lombok.Getter;
@@ -13,19 +14,15 @@ import java.util.List;
 @Table(name = "agenda")
 public class Agenda {
 
-    @Getter
     @Id
     @GeneratedValue
     private Long id;
-
-    @Getter
+    
     private String name;
 
     @ToString.Exclude
     @OneToMany(mappedBy = "agenda", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<AgendaItem> agendaItemList = new ArrayList<>();
-
-    private String owner;
 
     private Agenda() {
 

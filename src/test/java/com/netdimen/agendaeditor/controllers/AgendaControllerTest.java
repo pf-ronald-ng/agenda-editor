@@ -1,6 +1,6 @@
 package com.netdimen.agendaeditor.controllers;
 
-import com.netdimen.agendaeditor.agenda.models.Agenda.Agenda;
+import com.netdimen.agendaeditor.agenda.models.Agenda;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;

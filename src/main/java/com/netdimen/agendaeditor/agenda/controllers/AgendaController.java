@@ -1,6 +1,6 @@
 package com.netdimen.agendaeditor.agenda.controllers;
 
-import com.netdimen.agendaeditor.agenda.models.Agenda.Agenda;
+import com.netdimen.agendaeditor.agenda.models.Agenda;
 import com.netdimen.agendaeditor.agenda.repositories.AgendaRepository;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;

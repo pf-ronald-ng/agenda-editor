@@ -1,6 +1,7 @@
-package com.netdimen.agendaeditor.agenda.models.Agenda;
+package com.netdimen.agendaeditor.agenda.models;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.netdimen.agendaeditor.agenda.models.Agenda;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 
