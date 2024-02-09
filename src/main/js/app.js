@@ -211,7 +211,7 @@ class Agenda extends React.Component {
     render() {
         return (
             <tr>
-                <td>{this.props.agenda.name}</td>
+                <td>{this.props.agenda.id}</td>
                 <td>
                     <button onClick={this.handleDelete}>Delete</button>
                 </td>
